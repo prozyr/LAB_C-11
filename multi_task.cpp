@@ -164,22 +164,27 @@ private:
 };
 
 int main() {
-
+    // SETUP SIMULATION
     const int EndRange = 100000;
     const int StartRange = 4;
-
-    for (int numThreads = 1; numThreads < 10; numThreads++) {
-        {
-            TheoryChecker theoryChecker(StartRange, EndRange, numThreads);
-            auto start = high_resolution_clock::now();
-            theoryChecker.runSimulation();
-            auto stop = high_resolution_clock::now();
-            cout << "Range: " << EndRange << ", Threads: " << numThreads << ", Time taken: "
-                << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << " ms" << endl;
+    int timming = 0, acceleration = 0;
+    // LOOP increasing threads
+    for (int numThreads = 1; numThreads < 11; numThreads++) {
+        
+        TheoryChecker theoryChecker(StartRange, EndRange, numThreads);
+        auto start = high_resolution_clock::now();
+        theoryChecker.runSimulation();
+        auto stop = high_resolution_clock::now();
+        acceleration = timming;
+        timming = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+        if (numThreads > 1) {
+            acceleration = acceleration - timming;
         }
+        cout << "Range: " << EndRange << ", Threads: " << numThreads << ", Time taken: "
+            << timming << " ms, Acceleration: " << acceleration << " ms" << endl;
+        
     }
-
+    // Wait for presence results
     system("pause");
-
     return 0;
 }
