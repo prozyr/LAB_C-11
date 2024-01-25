@@ -117,7 +117,7 @@ private:
         // Vector with threads
         vector<thread> thr;
         // Init ranges for threads
-        int range = (search.finish - search.init) / num_threads;
+        int range = (search.finish - search.init + 1) / num_threads;
         s_th[0].init = 1;
         s_th[0].finish = s_th[0].init + range;
         if (num_threads != 1) {
@@ -126,7 +126,11 @@ private:
                 s_th[i].finish = s_th[i].init + range;
             }
         }
-
+        if (s_th[num_threads - 1].finish < search.finish) 
+            s_th[num_threads - 1].finish = search.finish;
+        for (int i = 0; i < num_threads; i++) {
+            cout << "start: " << s_th[i].init << ", end: " << s_th[i].finish << endl;
+        }
         // Prepare data with threads
         for (int i = 0; i < num_threads; i++)
             thr.push_back(thread(&TheoryChecker::dataGenerationTask, this, ref(s_th[i])));
@@ -169,7 +173,7 @@ int main() {
     const int StartRange = 4;
     int timming = 0, acceleration = 0;
     // LOOP increasing threads
-    for (int numThreads = 1; numThreads < 11; numThreads++) {
+    for (int numThreads = 1; numThreads < 6; numThreads++) {
         
         TheoryChecker theoryChecker(StartRange, EndRange, numThreads);
         auto start = high_resolution_clock::now();
